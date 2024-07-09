@@ -4,19 +4,31 @@ const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 
 function verificarToken(req, res, next) {
-    const token = req.headers['authorization'].split(' ');
-    if (!token) {
+    const authHeader = req.headers['authorization'];
+
+    if (!authHeader) {
         return res.status(401).json({ mensaje: 'Token no proporcionado' });
     }
 
-    jwt.verify(token[1], process.env.RSA_PRIVATE_KEY, { algorithm: 'RS256' }, (err, usuario) => {
+    const tokenParts = authHeader.split(' ');
+
+    if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
+        return res.status(401).json({ mensaje: 'Formato de token incorrecto' });
+    }
+
+    const token = tokenParts[1];
+    const privateKey = process.env.RSA_PRIVATE_KEY.replace(/\\n/g, '\n');
+
+    jwt.verify(token, privateKey, { algorithms: ['RS256'] }, (err, usuario) => {  // Note the plural 'algorithms' and use 'Bearer' prefix
         if (err) {
             return res.status(403).json({ mensaje: 'Token inválido' });
         }
+
         req.usuario = usuario;
         next();
     });
 }
+
 
 function verificarDatos(dataSegura) {
     let partes = dataSegura.split(',');

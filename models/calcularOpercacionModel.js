@@ -3,7 +3,7 @@ const {
 } = require("../database/conexion");
 
 async function registrarCalculo(
-    id,
+    UsuarioID,
     tipocalculo,
     parametro_principal,
     parametro_secundario,
@@ -14,9 +14,9 @@ async function registrarCalculo(
     const conexion = await obtenerConexion();
     try {
         await conexion.query(
-            "INSERT INTO calculo (id_usuario, tipocalculo, parametro_principal, parametro_secundario, parametro_terciario, parametro_cuaternario, resultado) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO calculo (UsuarioID, tipocalculo, parametro_principal, parametro_secundario, parametro_terciario, parametro_cuaternario, resultado) VALUES (?, ?, ?, ?, ?, ?, ?)",
             [
-                id,
+                UsuarioID,
                 tipocalculo,
                 parametro_principal,
                 parametro_secundario,
@@ -25,9 +25,9 @@ async function registrarCalculo(
                 resultado
             ]
         );
-        console.log("Calculo guardado correctamente");
+        ("Calculo guardado correctamente");
     } catch (error) {
-        console.error("Error al registrar el calculo", error); // corregir a console.error
+        console.error("Error al registrar el calculo", error);
         throw error;
     } finally {
         conexion.release();
@@ -35,7 +35,7 @@ async function registrarCalculo(
 }
 
 async function obtenerHistorial(id) {
-    const conexion = await obtenerConexion(); // corregir a obtenerConexion
+    const conexion = await obtenerConexion();
     try {
         const [results] = await conexion.query(
             `
@@ -63,14 +63,14 @@ async function obtenerHistorial(id) {
       ORDER BY
         h.id DESC; -- Ordenar por el más reciente
       `,
-            [id]
+            [UsuarioID]
         );
         return results;
     } catch (error) {
         console.error(
             "Error al obtener el historial de calculos del usuario:",
             error.message
-        ); // corregir a console.error
+        );
         throw error;
     } finally {
         conexion.release();

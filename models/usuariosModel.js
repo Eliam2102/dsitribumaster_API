@@ -3,7 +3,7 @@ const { obtenerConexion } = require('../database/conexion');
 async function registrar(nombre, email, password) {
     const conexion = await obtenerConexion();
     try {
-        await conexion.query('INSERT INTO usuarios (nombre, email, password_hash) VALUES (?, ?, ?)', [nombre, email, password]);
+        await conexion.query('INSERT INTO usuarios (nombre, correo, pass) VALUES (?, ?, ?)', [nombre, email, password]);
         console.log('Usuario insertado correctamente');
     } catch (error) {
         console.error('Error al insertar usuario en el modelo:', error);
@@ -16,7 +16,7 @@ async function registrar(nombre, email, password) {
 async function obtenerPorNombre(nombre) {
     const conexion = await obtenerConexion();
     try {
-        const [results] = await conexion.query('SELECT * FROM usuarios WHERE nombre = ?', [nombre]);
+        const [results] = await conexion.query('SELECT * FROM usuarios WHERE correo = ?', [nombre]);
         return results[0];
     } catch (error) {
         console.error('Error al obtener usuario por nombre en el modelo:', error);
