@@ -25,7 +25,19 @@ async function registrarCalculo(
                 resultado
             ]
         );
-        ("Calculo guardado correctamente");
+
+    // creaer objeto de la data insertada 
+    const datosInsertados = {
+        UsuarioID,
+        tipocalculo,
+        parametro_principal,
+        parametro_secundario,
+        parametro_terciario,
+        parametro_cuaternario,
+        resultado
+    };
+    //regresarlos para poder usarlos
+    return datosInsertados;
     } catch (error) {
         console.error("Error al registrar el calculo", error);
         throw error;

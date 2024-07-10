@@ -21,7 +21,8 @@ async function registrarCalculo(req, res) {
       parametro_cuaternario,
       resultado
     );
-    res.status(200).json({ message: 'Calculo guardado con éxito' });
+    // Aquí configuramos la respuesta JSON para enviar solo el resultado
+    res.status(200).json({ resultado });  
   } catch (error) {
     console.error('Error al registrar el calculo: ', error.message);
     res.status(500).json({ message: 'Error al registrar el calculo' });
