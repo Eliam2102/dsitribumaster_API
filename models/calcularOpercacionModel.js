@@ -46,48 +46,47 @@ async function registrarCalculo(
     }
 }
 
-async function obtenerHistorial(id) {
+async function obtenerHistorial(UsuarioID) {
     const conexion = await obtenerConexion();
     try {
         const [results] = await conexion.query(
             `
-      SELECT
-        h.id AS historial_id,
-        u.nombre AS usuario,
-        u.email AS email,
-        tc.nombre AS tipo_calculo,
-        c.parametro_principal,
-        c.parametro_secundario,
-        c.parametro_terciario,
-        c.parametro_cuaternario,
-        c.resultado,
-        c.fecha_calculo
-      FROM
-        historial h
-      INNER JOIN
-        calculo c ON h.id_calculo = c.id
-      INNER JOIN
-        usuarios u ON c.id_usuario = u.id_usuario
-      INNER JOIN
-        tipocalculo tc ON c.tipocalculo = tc.id
-      WHERE
-        u.id_usuario = ?
-      ORDER BY
-        h.id DESC; -- Ordenar por el más reciente
-      `,
+            SELECT
+                h.id,
+                h.usuario_nombre,
+                h.usuario_correo,
+                h.tipo_calculo_nombre,
+                h.parametro_principal,
+                h.parametro_secundario,
+                h.parametro_terciario,
+                h.parametro_cuaternario,
+                h.resultado,
+                h.fecha_calculo
+            FROM
+                historial h
+            WHERE
+                h.id_calculo IN (
+                    SELECT c.id
+                    FROM calculo c
+                    WHERE c.UsuarioID = ?
+                )
+            ORDER BY
+                h.id DESC; -- Ordenar por el más reciente
+            `,
             [UsuarioID]
         );
         return results;
     } catch (error) {
-        console.error(
-            "Error al obtener el historial de calculos del usuario:",
-            error.message
-        );
+        console.error("Error al obtener el historial de cálculos del usuario:", error.message);
         throw error;
     } finally {
         conexion.release();
     }
 }
+
+
+
+
 
 module.exports = {
     registrarCalculo,
